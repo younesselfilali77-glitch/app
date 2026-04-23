@@ -1,9 +1,9 @@
 import streamlit as st
 import random
 
-st.set_page_config(page_title="Final Love Trap", page_icon="❤️", layout="centered")
+st.set_page_config(page_title="The Love Boss", page_icon="❤️", layout="centered")
 
-# 1. تهيئة الأحجام والذاكرة
+# 1. تهيئة الذاكرة
 if 'scale_yes' not in st.session_state:
     st.session_state.scale_yes = 120 
 if 'scale_no' not in st.session_state:
@@ -15,7 +15,7 @@ if 'show_hearts' not in st.session_state:
 bg = "linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%)"
 txt = "#d63384"
 
-# 2. كود CSS لإصلاح ظهور القلوب وتنسيق الأزرار
+# 2. كود التنسيق CSS (حل مشكلة التداخل + القلوب)
 st.markdown(f"""
     <style>
     .stApp {{
@@ -25,30 +25,23 @@ st.markdown(f"""
         align-items: center;
     }}
     
-    .main .block-container {{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index: 2;
-    }}
-
-    /* حاوية الأزرار لمنع التداخل والدفع الجانبي */
+    /* منع تداخل الأزرار وجعلها جنباً إلى جنب دائماً */
     div[data-testid="stHorizontalBlock"] {{
         display: flex !important;
         flex-direction: row !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 30px !important;
+        gap: 20px !important;
         flex-wrap: nowrap !important;
     }}
 
     .stButton > button {{
         transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1) !important;
         border: none !important;
+        white-space: nowrap !important;
     }}
 
-    /* زر YES */
+    /* زر YES: جعله دائماً في المقدمة لمنع NO من الظهور فوقه */
     div[data-testid="stHorizontalBlock"] div:nth-child(1) button {{
         width: {st.session_state.scale_yes}px !important;
         height: {st.session_state.scale_yes}px !important;
@@ -56,9 +49,11 @@ st.markdown(f"""
         background-color: #28a745 !important;
         color: white !important;
         border-radius: 20px !important;
+        z-index: 99 !important; /* طبقة عليا */
+        position: relative !important;
     }}
     
-    /* زر NO */
+    /* زر NO: وضعه في طبقة خلفية */
     div[data-testid="stHorizontalBlock"] div:nth-child(2) button {{
         width: {max(35, st.session_state.scale_no)}px !important;
         height: {max(35, st.session_state.scale_no)}px !important;
@@ -66,26 +61,21 @@ st.markdown(f"""
         background-color: #dc3545 !important;
         color: white !important;
         border-radius: 15px !important;
+        z-index: 1 !important; /* طبقة خلفية */
+        position: relative !important;
     }}
 
-    /* الحل النهائي للقلوب: تبدأ دائماً من top: -10% */
+    /* أنيميشن القلوب: تبدأ من الأعلى وتختفي بالأسفل */
     @keyframes fall {{ 
-        0% {{ 
-            top: -10%; /* البداية من خارج الشاشة تماماً */
-            opacity: 1; 
-        }} 
-        100% {{ 
-            top: 110%; /* النهاية تحت الشاشة تماماً */
-            opacity: 0.5; 
-        }} 
+        0% {{ top: -15%; opacity: 1; }} 
+        100% {{ top: 110%; opacity: 0.2; }} 
     }}
-    
     .heart {{ 
         position: fixed; 
-        font-size: 30px; 
-        top: -10%; /* ضمان عدم ظهورها فجأة في المنتصف */
+        font-size: 35px; 
+        top: -15%; 
         animation: fall 3s linear infinite; 
-        z-index: 1 !important; 
+        z-index: 0 !important; 
         pointer-events: none;
     }}
     </style>
@@ -94,18 +84,17 @@ st.markdown(f"""
 st.markdown(f"<h1 style='color:{txt}; text-align:center;'>💖 Final Decision 💖</h1>", unsafe_allow_html=True)
 st.markdown(f"<h3 style='color:{txt}; text-align:center;'>Do you Love ME?</h3>", unsafe_allow_html=True)
 
-# 3. توليد القلوب عند الفوز (مع تأخيرات زمنية لضمان التسلسل)
+# 3. عرض القلوب عند الفوز
 if st.session_state.show_hearts:
     hearts_list = []
     for _ in range(40):
         l_pos = random.randint(0, 95)
-        # التأخير الزمني (Delay) يضمن توزيع سقوط القلوب من الأعلى
-        delay = random.uniform(0, 3) 
+        delay = random.uniform(0, 3)
         hearts_list.append(f'<div class="heart" style="left:{l_pos}%; animation-delay:{delay}s;">❤️</div>')
     st.markdown("".join(hearts_list), unsafe_allow_html=True)
     st.success("I Love You Too! ❤️🥰")
 
-# 4. الأزرار
+# 4. حاوية الأزرار (أفقية دائماً بدون تداخل)
 col1, col2 = st.columns([1, 1])
 
 with col1:
