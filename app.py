@@ -1,7 +1,7 @@
 import streamlit as st
 import random
 
-st.set_page_config(page_title="Perfect Love Trap", page_icon="❤️", layout="centered")
+st.set_page_config(page_title="Final Love Trap", page_icon="❤️", layout="centered")
 
 # 1. تهيئة الأحجام
 if 'scale_yes' not in st.session_state:
@@ -15,7 +15,7 @@ if 'show_hearts' not in st.session_state:
 bg = "linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%)"
 txt = "#d63384"
 
-# 2. كود CSS السحري لضمان التمركز الأفقي والانتقال الناعم
+# 2. CSS متطور لمنع التداخل (Overlapping)
 st.markdown(f"""
     <style>
     .stApp {{
@@ -25,25 +25,39 @@ st.markdown(f"""
         align-items: center;
     }}
     
-    /* حاوية الأزرار: تضمن بقاءهم بجانب بعضهم مهما حدث */
-    [data-testid="stHorizontalBlock"] {{
+    .main .block-container {{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+    }}
+
+    /* حاوية الأزرار لمنع التداخل */
+    div[data-testid="stHorizontalBlock"] {{
         display: flex !important;
-        flex-direction: row !important; /* ضمان الترتيب الأفقي */
-        flex-wrap: nowrap !important;  /* منع النزول لسطر جديد */
+        flex-direction: row !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 20px !important;
+        gap: 30px !important; /* مسافة أمان ثابتة بين الأزرار */
+        flex-wrap: nowrap !important;
+        width: 100% !important;
+    }}
+
+    /* تعديل الأعمدة لمنع تداخلها */
+    div[data-testid="stHorizontalBlock"] > div {{
+        width: auto !important;
+        min-width: min-content !important;
+        flex-shrink: 0 !important; /* يمنع العمود من الانضغاط أو الاختباء خلف الآخر */
     }}
 
     .stButton > button {{
-        transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; /* أنيميشن "سلايد" ناعم جداً */
+        transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1) !important;
         border: none !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
+        white-space: nowrap !important;
     }}
 
-    /* تنسيق زر YES */
+    /* زر YES */
     div[data-testid="stHorizontalBlock"] div:nth-child(1) button {{
         width: {st.session_state.scale_yes}px !important;
         height: {st.session_state.scale_yes}px !important;
@@ -52,13 +66,12 @@ st.markdown(f"""
         color: white !important;
         border-radius: 20px !important;
         font-weight: bold !important;
-        box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
     }}
     
-    /* تنسيق زر NO */
+    /* زر NO */
     div[data-testid="stHorizontalBlock"] div:nth-child(2) button {{
-        width: {max(30, st.session_state.scale_no)}px !important;
-        height: {max(30, st.session_state.scale_no)}px !important;
+        width: {max(35, st.session_state.scale_no)}px !important;
+        height: {max(35, st.session_state.scale_no)}px !important;
         font-size: {max(10, st.session_state.scale_no * 0.25)}px !important;
         background-color: #dc3545 !important;
         color: white !important;
@@ -77,14 +90,13 @@ st.markdown(f"""
 st.markdown(f"<h1 style='color:{txt}; text-align:center;'>💖 Final Decision 💖</h1>", unsafe_allow_html=True)
 st.markdown(f"<h3 style='color:{txt}; text-align:center;'>Do you Love ME?</h3>", unsafe_allow_html=True)
 
-# 3. عرض القلوب عند الفوز
 if st.session_state.show_hearts:
     hearts = "".join([f'<div class="heart" style="left:{random.randint(0,95)}%; animation-delay:{random.uniform(0,2)}s;">❤️</div>' for _ in range(40)])
     st.markdown(hearts, unsafe_allow_html=True)
     st.success("I Love You Too! ❤️🥰")
 
-# 4. حاوية الأزرار (أفقية دائماً)
-col1, col2 = st.columns(2)
+# 3. استخدام الأعمدة مع ضمان التباعد
+col1, col2 = st.columns([1, 1])
 
 with col1:
     if st.button("YES", key="btn_yes"):
@@ -93,7 +105,6 @@ with col1:
 
 with col2:
     if st.button("no", key="btn_no"):
-        # تكبير YES وتقليص NO
-        st.session_state.scale_yes += 90 
-        st.session_state.scale_no = max(30, st.session_state.scale_no - 15)
+        st.session_state.scale_yes += 100 
+        st.session_state.scale_no = max(35, st.session_state.scale_no - 15)
         st.rerun()
