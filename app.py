@@ -150,20 +150,4 @@ if name:
         st.warning("I love you more than you know 💗🫶🏻")
     
     else:
-        st.info(f"Hello {name}! Nice to meet you.")
-        import streamlit as st
-
-st.title("🚀 Love Detector App")
-
-name = st.text_input("Enter a name to test:")
-
-if name:
-    # هذا السطر يقوم بكتابة الاسم في ملف اسمه 'log.txt' على السيرفر
-    with open("log.txt", "a") as f:
-        f.write(f"Someone entered: {name}\n")
-    
-    if name.lower() == "youness":
-        st.balloons()
-        st.success("You are in love with Ikram!")
-    else:
-        st.info(f"Hello {name}!")
+        st.info(f"Hiii {name}! Nice to meet you.")
