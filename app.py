@@ -33,7 +33,7 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-st.subheader("Do you agree that I am a genius programmer?")
+st.subheader("Do you Love ME ?")
 
 # إنشاء أعمدة لوضع الأزرار بجانب بعضها
 col1, col2 = st.columns([2, 1])
@@ -41,7 +41,7 @@ col1, col2 = st.columns([2, 1])
 with col1:
     if st.button("YES"):
         st.balloons()
-        st.success("Correct answer! I'm proud of you. 🏆")
+        st.success("ME Too ")
 
 with col2:
     if st.button("no"):
