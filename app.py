@@ -13,14 +13,13 @@ if 'order' not in st.session_state:
 if 'show_hearts' not in st.session_state:
     st.session_state.show_hearts = False
 
-# اختيار الثيم الوردي (كما في صورتك الأخيرة)
+# ثيم وردي ناعم
 bg = "linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%)"
 txt = "#d63384"
 
-# 2. كود CSS للتمركز المطلق وإخفاء أي عناصر إضافية
+# 2. كود CSS المطور (نقل القلوب للخلفية)
 st.markdown(f"""
     <style>
-    /* التمركز في وسط الشاشة */
     .stApp {{
         background: {bg} !important;
         display: flex;
@@ -33,16 +32,16 @@ st.markdown(f"""
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        z-index: 2; /* جعل المحتوى فوق القلوب */
     }}
 
     h1, h3 {{
         color: {txt} !important;
         text-align: center;
         margin-bottom: 2rem !important;
-        font-family: 'Arial', sans-serif;
     }}
 
-    /* تنسيق زر YES */
+    /* زر YES */
     div[data-testid="stHorizontalBlock"] div:nth-child({st.session_state.order[0] + 1}) button {{
         width: {st.session_state.scale_yes}px !important;
         height: {st.session_state.scale_yes}px !important;
@@ -52,10 +51,9 @@ st.markdown(f"""
         border-radius: 20px !important;
         font-weight: bold !important;
         border: none !important;
-        box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
     }}
     
-    /* تنسيق زر no */
+    /* زر NO */
     div[data-testid="stHorizontalBlock"] div:nth-child({st.session_state.order[1] + 1}) button {{
         width: {max(25, st.session_state.scale_no)}px !important;
         height: {max(25, st.session_state.scale_no)}px !important;
@@ -63,35 +61,38 @@ st.markdown(f"""
         background-color: #dc3545 !important;
         color: white !important;
         border-radius: 20px !important;
-        border: none !important;
     }}
 
-    /* أنيميشن القلوب المتساقطة */
+    /* أنيميشن القلوب في الخلفية */
     @keyframes fall {{ 
-        0% {{ top: -10%; transform: rotate(0deg); }} 
-        100% {{ top: 110%; transform: rotate(360deg); }} 
+        0% {{ top: -10%; transform: rotate(0deg); opacity: 1; }} 
+        100% {{ top: 110%; transform: rotate(360deg); opacity: 0; }} 
     }}
     .heart {{ 
         position: fixed; 
-        font-size: 35px; 
-        animation: fall 3s linear infinite; 
-        z-index: 999; 
-        user-select: none;
+        font-size: 30px; 
+        animation: fall 4s linear infinite; 
+        z-index: 1 !important; /* وضع القلوب خلف المحتوى */
+        pointer-events: none; /* لكي لا تعيق الضغط على الأزرار */
     }}
     </style>
 """, unsafe_allow_html=True)
 
-# 3. النصوص في المنتصف
+# 3. النصوص
 st.markdown("<h1>💖 Final Decision 💖</h1>", unsafe_allow_html=True)
 st.markdown("<h3>Do you Love ME?</h3>", unsafe_allow_html=True)
 
-# عرض مطر القلوب بدون أي رسائل success أو شريط رمادي
+# 4. توليد القلوب عند الفوز
 if st.session_state.show_hearts:
-    hearts_html = "".join([f'<div class="heart" style="left:{random.randint(0,95)}%; animation-delay:{random.uniform(0,2)}s;">❤️</div>' for _ in range(45)])
-    st.markdown(hearts_html, unsafe_allow_html=True)
-    # ملاحظة: تم حذف st.success() هنا لضمان عدم ظهور الشريط الرمادي في الصورة
+    hearts_list = []
+    for _ in range(40):
+        l_pos = random.randint(0, 95)
+        delay = random.uniform(0, 4)
+        hearts_list.append(f'<div class="heart" style="left:{l_pos}%; animation-delay:{delay}s;">❤️</div>')
+    st.markdown("".join(hearts_list), unsafe_allow_html=True)
+    st.success("I Love You Too! ❤️🥰")
 
-# 4. الأزرار
+# 5. توزيع الأزرار
 cols = st.columns([1, 1, 1])
 
 with cols[st.session_state.order[0]]:
@@ -102,8 +103,7 @@ with cols[st.session_state.order[0]]:
 with cols[st.session_state.order[1]]:
     if st.button("no", key="btn_no"):
         st.session_state.scale_yes += 100
-        st.session_state.scale_no = max(25, st.session_state.scale_no - 20)
-        
+        st.session_state.scale_no = max(20, st.session_state.scale_no - 20)
         new_order = [0, 1, 2]
         random.shuffle(new_order)
         st.session_state.order = new_order
