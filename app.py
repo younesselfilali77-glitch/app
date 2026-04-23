@@ -124,7 +124,29 @@ if name:
         st.warning("You are in love with (7choma nktb smitha) 🤫")
     
     elif user_name == "ikram":
-        st.big_heart() # تأثير تساقط الثلج!
+        # تأثير البالونات
+        st.balloons()
+        
+        # كود القلب النابض باستخدام HTML و CSS
+        st.markdown("""
+            <style>
+            @keyframes heartbeat {
+                0% { transform: scale(1); }
+                25% { transform: scale(1.1); }
+                50% { transform: scale(1); }
+                75% { transform: scale(1.2); }
+                100% { transform: scale(1); }
+            }
+            .big-heart {
+                font-size: 100px;
+                text-align: center;
+                animation: heartbeat 1.5s infinite;
+                margin-top: 20px;
+            }
+            </style>
+            <div class="big-heart">❤️</div>
+            <h2 style='text-align: center; color: #d63384;'>I love you more than you know 💗🫶🏻</h2>
+        """, unsafe_allow_html=True)
         st.warning("I love you more than you know 💗🫶🏻")
     
     else:
