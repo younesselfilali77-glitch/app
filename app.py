@@ -3,7 +3,7 @@ import random
 
 st.set_page_config(page_title="Final Love Trap", page_icon="❤️", layout="centered")
 
-# 1. تهيئة الأحجام
+# 1. تهيئة الأحجام والذاكرة
 if 'scale_yes' not in st.session_state:
     st.session_state.scale_yes = 120 
 if 'scale_no' not in st.session_state:
@@ -15,7 +15,7 @@ if 'show_hearts' not in st.session_state:
 bg = "linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%)"
 txt = "#d63384"
 
-# 2. CSS متطور لمنع التداخل (Overlapping)
+# 2. كود CSS لإصلاح ظهور القلوب وتنسيق الأزرار
 st.markdown(f"""
     <style>
     .stApp {{
@@ -33,28 +33,19 @@ st.markdown(f"""
         z-index: 2;
     }}
 
-    /* حاوية الأزرار لمنع التداخل */
+    /* حاوية الأزرار لمنع التداخل والدفع الجانبي */
     div[data-testid="stHorizontalBlock"] {{
         display: flex !important;
         flex-direction: row !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 30px !important; /* مسافة أمان ثابتة بين الأزرار */
+        gap: 30px !important;
         flex-wrap: nowrap !important;
-        width: 100% !important;
-    }}
-
-    /* تعديل الأعمدة لمنع تداخلها */
-    div[data-testid="stHorizontalBlock"] > div {{
-        width: auto !important;
-        min-width: min-content !important;
-        flex-shrink: 0 !important; /* يمنع العمود من الانضغاط أو الاختباء خلف الآخر */
     }}
 
     .stButton > button {{
         transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1) !important;
         border: none !important;
-        white-space: nowrap !important;
     }}
 
     /* زر YES */
@@ -65,7 +56,6 @@ st.markdown(f"""
         background-color: #28a745 !important;
         color: white !important;
         border-radius: 20px !important;
-        font-weight: bold !important;
     }}
     
     /* زر NO */
@@ -78,24 +68,44 @@ st.markdown(f"""
         border-radius: 15px !important;
     }}
 
-    /* القلوب في الخلفية */
+    /* الحل النهائي للقلوب: تبدأ دائماً من top: -10% */
     @keyframes fall {{ 
-        0% {{ top: -10%; opacity: 1; }} 
-        100% {{ top: 110%; opacity: 0; }} 
+        0% {{ 
+            top: -10%; /* البداية من خارج الشاشة تماماً */
+            opacity: 1; 
+        }} 
+        100% {{ 
+            top: 110%; /* النهاية تحت الشاشة تماماً */
+            opacity: 0.5; 
+        }} 
     }}
-    .heart {{ position: fixed; font-size: 30px; animation: fall 3s linear infinite; z-index: 1; pointer-events: none; }}
+    
+    .heart {{ 
+        position: fixed; 
+        font-size: 30px; 
+        top: -10%; /* ضمان عدم ظهورها فجأة في المنتصف */
+        animation: fall 3s linear infinite; 
+        z-index: 1 !important; 
+        pointer-events: none;
+    }}
     </style>
 """, unsafe_allow_html=True)
 
 st.markdown(f"<h1 style='color:{txt}; text-align:center;'>💖 Final Decision 💖</h1>", unsafe_allow_html=True)
 st.markdown(f"<h3 style='color:{txt}; text-align:center;'>Do you Love ME?</h3>", unsafe_allow_html=True)
 
+# 3. توليد القلوب عند الفوز (مع تأخيرات زمنية لضمان التسلسل)
 if st.session_state.show_hearts:
-    hearts = "".join([f'<div class="heart" style="left:{random.randint(0,95)}%; animation-delay:{random.uniform(0,2)}s;">❤️</div>' for _ in range(40)])
-    st.markdown(hearts, unsafe_allow_html=True)
+    hearts_list = []
+    for _ in range(40):
+        l_pos = random.randint(0, 95)
+        # التأخير الزمني (Delay) يضمن توزيع سقوط القلوب من الأعلى
+        delay = random.uniform(0, 3) 
+        hearts_list.append(f'<div class="heart" style="left:{l_pos}%; animation-delay:{delay}s;">❤️</div>')
+    st.markdown("".join(hearts_list), unsafe_allow_html=True)
     st.success("I Love You Too! ❤️🥰")
 
-# 3. استخدام الأعمدة مع ضمان التباعد
+# 4. الأزرار
 col1, col2 = st.columns([1, 1])
 
 with col1:
