@@ -3,7 +3,7 @@ import random
 
 st.set_page_config(page_title="Smooth Love Trap", page_icon="❤️", layout="centered")
 
-# 1. تهيئة الأحجام
+# 1. تهيئة الأحجام والترتيب (بداية متساوية كما طلبت)
 if 'scale_yes' not in st.session_state:
     st.session_state.scale_yes = 120 
 if 'scale_no' not in st.session_state:
@@ -13,11 +13,11 @@ if 'order' not in st.session_state:
 if 'show_hearts' not in st.session_state:
     st.session_state.show_hearts = False
 
-# ثيم وردي ناعم (مثل صورتك المفضلة)
+# ثيم وردي ناعم
 bg = "linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%)"
 txt = "#d63384"
 
-# 2. كود CSS مع خاصية الـ Transition للانتقال الناعم
+# 2. CSS السحري: تمركز + انتقال انسيابي للحجم والموقع
 st.markdown(f"""
     <style>
     .stApp {{
@@ -39,13 +39,13 @@ st.markdown(f"""
         text-align: center;
     }}
 
-    /* السر هنا: خاصية transition تجعل التغيير مثل السلايد */
+    /* الانتقال الانسيابي لكل شيء (الحجم والموقع) */
     .stButton > button {{
-        transition: all 0.5s ease-in-out !important; 
+        transition: width 0.6s ease, height 0.6s ease, font-size 0.6s ease, transform 0.6s ease !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        overflow: hidden !important;
+        border: none !important;
     }}
 
     /* زر YES */
@@ -57,7 +57,6 @@ st.markdown(f"""
         color: white !important;
         border-radius: 20px !important;
         font-weight: bold !important;
-        border: none !important;
     }}
     
     /* زر NO */
@@ -68,13 +67,12 @@ st.markdown(f"""
         background-color: #dc3545 !important;
         color: white !important;
         border-radius: 20px !important;
-        border: none !important;
     }}
 
     /* أنيميشن القلوب في الخلفية */
     @keyframes fall {{ 
-        0% {{ top: -10%; transform: rotate(0deg); }} 
-        100% {{ top: 110%; transform: rotate(360deg); }} 
+        0% {{ top: -10%; opacity: 1; }} 
+        100% {{ top: 110%; opacity: 0; }} 
     }}
     .heart {{ 
         position: fixed; 
@@ -86,7 +84,7 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. المحتوى
+# 3. النصوص
 st.markdown("<h1>💖 Final Decision 💖</h1>", unsafe_allow_html=True)
 st.markdown("<h3>Do you Love ME?</h3>", unsafe_allow_html=True)
 
@@ -95,7 +93,7 @@ if st.session_state.show_hearts:
     st.markdown(hearts, unsafe_allow_html=True)
     st.success("I Love You Too! ❤️🥰")
 
-# 4. الأزرار
+# 4. الأزرار (توزيع في أعمدة)
 cols = st.columns([1, 1, 1])
 
 with cols[st.session_state.order[0]]:
@@ -109,7 +107,9 @@ with cols[st.session_state.order[1]]:
         st.session_state.scale_yes += 100
         st.session_state.scale_no = max(30, st.session_state.scale_no - 20)
         
-        # ملاحظة: إذا أردت الأنيميشن أن يظهر بوضوح، يفضل عدم تغيير الترتيب (order) 
-        # لأن تغيير الترتيب يجعل المتصفح يعيد بناء الأزرار في أماكن جديدة.
-        # لذا سأترك الترتيب كما هو لترى تأثير السلايد.
+        # تغيير الترتيب (الهروب لمكان جديد)
+        new_order = [0, 1, 2]
+        random.shuffle(new_order)
+        st.session_state.order = new_order
+        
         st.rerun()
