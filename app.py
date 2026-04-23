@@ -101,3 +101,27 @@ with col2:
         st.session_state.scale_yes += 80 # زيادة معقولة لكي لا يخرج عن الشاشة بسرعة
         st.session_state.scale_no = max(40, st.session_state.scale_no - 15)
         st.rerun()
+import streamlit as st
+
+# إضافة عنوان جذاب مع رمز تعبيري
+st.title("🚀 Youness Elite Web App")
+
+# إضافة خط فاصل لتنظيم الشكل
+st.divider()
+
+name = st.text_input("Who is visiting the app today?")
+
+if name:
+    # تحويل الاسم لحروف صغيرة ليعمل الكود مهما كانت طريقة الكتابة
+    user_name = name.strip().lower()
+
+    if user_name == "youness":
+        st.balloons() # احتفال بالبالونات!
+        st.success(f"Welcome Boss! You are in love with Ikram! ❤️")
+        
+    elif user_name == "anas":
+        st.snow() # تأثير تساقط الثلج!
+        st.warning("You are in love with (7choma nktb smitha) 🤫")
+        
+    else:
+        st.info(f"Hello {name}! Nice to meet you.")
