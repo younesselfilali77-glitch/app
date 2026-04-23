@@ -122,6 +122,10 @@ if name:
     elif user_name == "anas":
         st.snow() # تأثير تساقط الثلج!
         st.warning("You are in love with (7choma nktb smitha) 🤫")
-        
+    
+    elif user_name == "ikram":
+        st.big_heart() # تأثير تساقط الثلج!
+        st.warning("I love you more than you know 💗🫶🏻")
+    
     else:
         st.info(f"Hello {name}! Nice to meet you.")
