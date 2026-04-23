@@ -1,10 +1,24 @@
 import streamlit as st
 
-st.title("Youness First App")
-name = st.text_input("Who is talking?")
+# إضافة عنوان جميل مع رمز تعبيري
+st.title("🚀 Youness Elite Web App")
+
+# إضافة خط فاصل
+st.divider()
+
+name = st.text_input("Who is visiting today?")
 
 if name:
-    if name == "Youness":
-        st.write("You are in love with Ikram!")
-    if name == "Anas":
-        st.write(f"you are in love with (7choma nktb smitha)")
+    # تحويل الاسم لحروف صغيرة لضمان عمل الكود حتى لو كتب المستخدم Anas أو anas
+    user_name = name.strip().lower()
+
+    if user_name == "youness":
+        st.balloons() # إضافة بالونات احتفالية!
+        st.success("Welcome Boss! You are in love with Ikram! ❤️")
+        
+    elif user_name == "anas":
+        st.snow() # إضافة تأثير الثلج!
+        st.warning("You are in love with (7choma nktb smitha) 🤫")
+        
+    else:
+        st.info(f"Hello {name}! Hope you're having a great day.")
