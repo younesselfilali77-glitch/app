@@ -3,7 +3,7 @@ import random
 
 st.set_page_config(page_title="Love Trap Final", page_icon="❤️", layout="centered")
 
-# 1. تهيئة الأحجام (بداية متساوية كما في صورتك الأخيرة)
+# 1. تهيئة الأحجام
 if 'scale_yes' not in st.session_state:
     st.session_state.scale_yes = 120 
 if 'scale_no' not in st.session_state:
@@ -13,14 +13,14 @@ if 'order' not in st.session_state:
 if 'show_hearts' not in st.session_state:
     st.session_state.show_hearts = False
 
-# اختيار الثيم (Soft Pink كما في آخر صورة ناجحة لك)
+# اختيار الثيم الوردي (كما في صورتك الأخيرة)
 bg = "linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%)"
 txt = "#d63384"
 
-# 2. كود CSS للتمركز وحذف النفاخات وتنسيق الأزرار
+# 2. كود CSS للتمركز المطلق وإخفاء أي عناصر إضافية
 st.markdown(f"""
     <style>
-    /* التمركز المطلق للمحتوى في وسط الشاشة */
+    /* التمركز في وسط الشاشة */
     .stApp {{
         background: {bg} !important;
         display: flex;
@@ -39,9 +39,10 @@ st.markdown(f"""
         color: {txt} !important;
         text-align: center;
         margin-bottom: 2rem !important;
+        font-family: 'Arial', sans-serif;
     }}
 
-    /* تنسيق زر YES المربع العملاق */
+    /* تنسيق زر YES */
     div[data-testid="stHorizontalBlock"] div:nth-child({st.session_state.order[0] + 1}) button {{
         width: {st.session_state.scale_yes}px !important;
         height: {st.session_state.scale_yes}px !important;
@@ -51,9 +52,10 @@ st.markdown(f"""
         border-radius: 20px !important;
         font-weight: bold !important;
         border: none !important;
+        box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
     }}
     
-    /* تنسيق زر NO المربع الصغير */
+    /* تنسيق زر no */
     div[data-testid="stHorizontalBlock"] div:nth-child({st.session_state.order[1] + 1}) button {{
         width: {max(25, st.session_state.scale_no)}px !important;
         height: {max(25, st.session_state.scale_no)}px !important;
@@ -79,17 +81,17 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. النصوص
+# 3. النصوص في المنتصف
 st.markdown("<h1>💖 Final Decision 💖</h1>", unsafe_allow_html=True)
 st.markdown("<h3>Do you Love ME?</h3>", unsafe_allow_html=True)
 
-# عرض مطر القلوب فقط (تم حذف st.balloons)
+# عرض مطر القلوب بدون أي رسائل success أو شريط رمادي
 if st.session_state.show_hearts:
-    hearts_html = "".join([f'<div class="heart" style="left:{random.randint(0,95)}%; animation-delay:{random.uniform(0,2)}s;">❤️</div>' for _ in range(40)])
+    hearts_html = "".join([f'<div class="heart" style="left:{random.randint(0,95)}%; animation-delay:{random.uniform(0,2)}s;">❤️</div>' for _ in range(45)])
     st.markdown(hearts_html, unsafe_allow_html=True)
-    st.success("I Love You Too! ❤️🥰")
+    # ملاحظة: تم حذف st.success() هنا لضمان عدم ظهور الشريط الرمادي في الصورة
 
-# 4. الأزرار المتمركزة
+# 4. الأزرار
 cols = st.columns([1, 1, 1])
 
 with cols[st.session_state.order[0]]:
@@ -100,9 +102,8 @@ with cols[st.session_state.order[0]]:
 with cols[st.session_state.order[1]]:
     if st.button("no", key="btn_no"):
         st.session_state.scale_yes += 100
-        st.session_state.scale_no = max(20, st.session_state.scale_no - 20)
+        st.session_state.scale_no = max(25, st.session_state.scale_no - 20)
         
-        # خلط عشوائي للأماكن ليهرب الزر
         new_order = [0, 1, 2]
         random.shuffle(new_order)
         st.session_state.order = new_order
