@@ -1,71 +1,68 @@
 import streamlit as st
 import random
 
-st.set_page_config(page_title="The Final Victory", page_icon="⏹️")
+st.set_page_config(page_title="Pixel Perfect Trap", page_icon="🖼️")
 
 # 1. الذاكرة
-if 'yes_size' not in st.session_state:
-    st.session_state.yes_size = 120
-if 'no_size' not in st.session_state:
-    st.session_state.no_size = 80
+if 'scale' not in st.session_state:
+    st.session_state.scale = 100  # مقياس حجم YES
+if 'no_scale' not in st.session_state:
+    st.session_state.no_scale = 80 # مقياس حجم no
 if 'order' not in st.session_state:
     st.session_state.order = [0, 1, 2]
 
 st.title("Final Decision... 🙄")
 st.subheader("Do you Love ME?")
 
-# 2. كود CSS لإجبار المربعات والنص العملاق
+# 2. كود CSS السحري: يربط كل شيء بمتغير الـ scale
 st.markdown(f"""
     <style>
-    /* منع التفاف النص نهائياً وتوسيطه */
+    /* تنسيق عام للأزرار لجعلها مربعة تماماً */
     .stButton > button {{
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         white-space: nowrap !important;
-        margin: auto !important;
+        border: none !important;
+        transition: all 0.2s ease-in-out !important;
     }}
 
-    /* زر YES: مربع ونصوص ضخمة */
+    /* زر YES: تكبير المربع والنص كأنهما صورة واحدة */
     div[data-testid="stHorizontalBlock"] div:nth-child({st.session_state.order[0] + 1}) button {{
-        width: {st.session_state.yes_size}px !important;
-        height: {st.session_state.yes_size}px !important;
-        font-size: {st.session_state.yes_size // 3}px !important;
+        width: {st.session_state.scale}px !important;
+        height: {st.session_state.scale}px !important;
+        font-size: {st.session_state.scale * 0.35}px !important; /* النص دائماً 35% من حجم المربع */
         background-color: #28a745 !important;
         color: white !important;
-        border-radius: 15px !important;
-        font-weight: bold !important;
+        border-radius: {st.session_state.scale * 0.1}px !important; /* انحناء الزوايا يتناسب مع الحجم */
     }}
     
-    /* زر no: مربع صغير يتقلص */
+    /* زر no: تصغير المربع والنص معاً */
     div[data-testid="stHorizontalBlock"] div:nth-child({st.session_state.order[1] + 1}) button {{
-        width: {max(30, st.session_state.no_size)}px !important;
-        height: {max(30, st.session_state.no_size)}px !important;
-        font-size: {max(10, st.session_state.no_size // 3)}px !important;
+        width: {max(20, st.session_state.no_scale)}px !important;
+        height: {max(20, st.session_state.no_scale)}px !important;
+        font-size: {max(8, st.session_state.no_scale * 0.35)}px !important;
         background-color: #dc3545 !important;
         color: white !important;
-        border-radius: 5px !important;
+        border-radius: {max(2, st.session_state.no_scale * 0.1)}px !important;
     }}
     </style>
 """, unsafe_allow_html=True)
 
-# 3. توزيع الأزرار في أعمدة واسعة
+# 3. توزيع الأعمدة
 cols = st.columns([1, 1, 1])
 
 with cols[st.session_state.order[0]]:
     if st.button("YES", key="btn_yes"):
         st.balloons()
-        st.success("Victory! ❤️🥳")
+        st.success("You caught the BIG YES! ❤️")
 
 with cols[st.session_state.order[1]]:
     if st.button("no", key="btn_no"):
-        # قفزة ضخمة في الحجم لفرض السيطرة
-        st.session_state.yes_size += 100
-        if st.session_state.no_size > 20:
-            st.session_state.no_size -= 15
+        # تكبير YES وتصغير no
+        st.session_state.scale += 80
+        st.session_state.no_scale -= 15
         
-        # خلط الأماكن
+        # تغيير الأماكن عشوائياً
         new_order = [0, 1, 2]
-        random.shuffle(new_order)
-        st.session_state.order = new_order
-        st.rerun()
+        random
