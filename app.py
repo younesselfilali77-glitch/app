@@ -1,56 +1,69 @@
 import streamlit as st
 import random
 
-st.set_page_config(page_title="You Can't Catch Me!", page_icon="👻")
+st.set_page_config(page_title="Square Trap", page_icon="⏹️")
 
-# 1. الذاكرة لحفظ الأحجام وأماكن الأزرار
+# 1. الذاكرة
 if 'yes_size' not in st.session_state:
-    st.session_state.yes_size = 60
+    st.session_state.yes_size = 80
 if 'no_size' not in st.session_state:
-    st.session_state.no_size = 60
+    st.session_state.no_size = 80
 if 'order' not in st.session_state:
-    st.session_state.order = [0, 1, 2] # ترتيب افتراضي للأعمدة
+    st.session_state.order = [0, 1, 2]
 
 st.title("Final Decision... 🙄")
 st.subheader("Do you Love ME?")
 
-# 2. كود CSS للأحجام والمربعات
+# 2. CSS يربط حجم الخط بحجم المربع
 st.markdown(f"""
     <style>
-    div[data-testid="stHorizontalBlock"] div:nth-child(1) button {{
+    /* زر YES: النص يكبر بنسبة 30% من حجم المربع */
+    div[data-testid="stHorizontalBlock"] div:nth-child({st.session_state.order[0] + 1}) button {{
         width: {st.session_state.yes_size}px !important;
         height: {st.session_state.yes_size}px !important;
-        font-size: {max(10, st.session_state.yes_size // 4)}px !important;
+        font-size: {st.session_state.yes_size // 3}px !important; /* النص يكبر تلقائياً */
         background-color: #28a745 !important;
         color: white !important;
+        border-radius: 15px;
+        font-weight: bold !important;
+        white-space: nowrap !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }}
-    div[data-testid="stHorizontalBlock"] div:nth-child(2) button {{
-        width: {max(10, st.session_state.no_size)}px !important;
-        height: {max(10, st.session_state.no_size)}px !important;
-        font-size: {max(2, st.session_state.no_size // 4)}px !important;
+    
+    /* زر no: النص يصغر مع المربع */
+    div[data-testid="stHorizontalBlock"] div:nth-child({st.session_state.order[1] + 1}) button {{
+        width: {max(20, st.session_state.no_size)}px !important;
+        height: {max(20, st.session_state.no_size)}px !important;
+        font-size: {max(6, st.session_state.no_size // 4)}px !important;
         background-color: #dc3545 !important;
         color: white !important;
+        border-radius: 5px;
+        white-space: nowrap !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }}
     </style>
 """, unsafe_allow_html=True)
 
-# 3. إنشاء 3 أعمدة وتغيير ترتيب الأزرار فيها عشوائياً
 cols = st.columns([1, 1, 1])
 
-# مصفوفة تحتوي على العمليات
-def draw_yes():
-    if cols[st.session_state.order[0]].button("YES", key="btn_yes"):
+# زر YES
+with cols[st.session_state.order[0]]:
+    if st.button("YES", key="btn_yes"):
         st.balloons()
-        st.success("Victory! ❤️")
+        st.success("I knew it! ❤️🥳")
 
-def draw_no():
-    if cols[st.session_state.order[1]].button("no", key="btn_no"):
-        # تغيير الحجم + تغيير الترتيب عشوائياً
-        st.session_state.yes_size += 40
-        st.session_state.no_size -= 10
-        random.shuffle(st.session_state.order) # خلط ترتيب الأعمدة
+# زر no
+with cols[st.session_state.order[1]]:
+    if st.button("no", key="btn_no"):
+        st.session_state.yes_size += 60 # زيادة الحجم
+        st.session_state.no_size -= 10  # تصغير الحجم
+        
+        # تغيير الأماكن عشوائياً
+        new_order = [0, 1, 2]
+        random.shuffle(new_order)
+        st.session_state.order = new_order
         st.rerun()
-
-# تنفيذ الرسم بناءً على الترتيب العشوائي في الذاكرة
-draw_yes()
-draw_no()
