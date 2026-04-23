@@ -1,24 +1,35 @@
 import streamlit as st
 
-# إضافة عنوان جميل مع رمز تعبيري
-st.title("🚀 Youness Elite Web App")
+st.title("Question for you... 🙄")
 
-# إضافة خط فاصل
-st.divider()
+# تعريف متغير في "Session State" لحفظ حجم الزر حتى لا يضيع عند إعادة التحميل
+if 'yes_size' not in st.session_state:
+    st.session_state.yes_size = 20  # الحجم الأصلي بالبيكسل
 
-name = st.text_input("Who is visiting today?")
+# كود CSS لتغيير حجم الزر ديناميكياً
+st.markdown(f"""
+    <style>
+    div.stButton > button:first-child {{
+        font-size: {st.session_state.yes_size}px !important;
+        height: {st.session_state.yes_size * 2}px !important;
+        width: {st.session_state.yes_size * 4}px !important;
+        background-color: #28a745 !important;
+        color: white !important;
+    }}
+    </style>
+""", unsafe_allow_html=True)
 
-if name:
-    # تحويل الاسم لحروف صغيرة لضمان عمل الكود حتى لو كتب المستخدم Anas أو anas
-    user_name = name.strip().lower()
+st.write("Do you think I'm the best programmer?")
 
-    if user_name == "youness":
-        st.balloons() # إضافة بالونات احتفالية!
-        st.success("Welcome Boss! You are in love with Ikram! ❤️")
-        
-    elif user_name == "anas":
-        st.snow() # إضافة تأثير الثلج!
-        st.warning("You are in love with (7choma nktb smitha) 🤫")
-        
-    else:
-        st.info(f"Hello {name}! Hope you're having a great day.")
+col1, col2 = st.columns([1, 1])
+
+with col1:
+    if st.button("Yes"):
+        st.balloons()
+        st.success("I knew it! 😎")
+
+with col2:
+    if st.button("No"):
+        # زيادة حجم زر Yes في كل مرة يُضغط فيها No
+        st.session_state.yes_size += 20
+        st.rerun() # إعادة تشغيل التطبيق لتطبيق الحجم الجديد
